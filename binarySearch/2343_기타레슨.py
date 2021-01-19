@@ -22,19 +22,19 @@ def main(f=None):
     # ######## INPUT AREA END ############
     # ####################################
 
-    print(binRight(arr, m, max(arr), sum(arr)+1))
+    print(binLeft(arr, m, max(arr), sum(arr)+1))
 
 
-def binRight(arr, val, left, right):
+def binLeft(arr, val, left, right):
     if left == right:
         return left
     mid = (left + right) // 2
     midVal = numOfCD(arr, mid)
 
     if midVal <= val:
-        return binRight(arr, val, left, mid)
+        return binLeft(arr, val, left, mid)
     else:
-        return binRight(arr, val, mid+1, right)
+        return binLeft(arr, val, mid+1, right)
 
 
 def numOfCD(arr, size):
