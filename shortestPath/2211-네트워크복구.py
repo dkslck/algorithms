@@ -37,6 +37,7 @@ def main(f=None):
 
     dSuper, parents = dijkstra(0)
 
+    print(N-1)
     for i, p in enu(parents[1:]):
         print(i+2, p+1)
 
