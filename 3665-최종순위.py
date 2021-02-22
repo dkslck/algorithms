@@ -21,60 +21,76 @@ def main(f=None):
     # sys.setrecursionlimit(10**9)
     # ####################################
     # ######## INPUT AREA BEGIN ##########
-    global N, M, mat
-    N, M = map(int, input().split())
 
-    mat = [list(map(int, input().split())) for _ in range(N)]
+    global T, N, G, arr, M, pairs, degree
+    T = int(input())
+    for _ in range(T):
+        N = int(input())
+        G = Mat(N, N, False)
+        arr = [int(i)-1 for i in input().split()]
+        M = int(input())
+        degree = [None for _ in range(N)]
+        pairs = []
+        for _ in range(M):
+            x, y = map(lambda x:int(x)-1, input().split())
+            pairs.append((x, y))
+
+        solve()
 
     # ######## INPUT AREA END ############
     # ####################################
 
-    global max_
-    global vis
-    vis = Mat(N, M, False)
-    max_ = 0
-    for i, j in For(N, M):
-        vis[i][j] = True
-        dfs(i, j, 0, mat[i][j])
-        vis[i][j] = False
 
-        tSum(i, j)
+def solve():
+    # last year's result
+    teamsAbove = []
+    for i in arr:
+        for team in teamsAbove:
+            G[i][team] = True
+            G[team][i] = False
+        teamsAbove.append(i)
 
-    print(max_)
+    # this year's result
+    for x, y in pairs:
+        if G[x][y]:
+            x, y = y, x
+        G[x][y] = True
+        G[y][x] = False
 
+    # degree calculation
+    for i in range(N):
+        countTrue = 0
+        for j in range(N):
+            if G[i][j]:
+                countTrue += 1
+        degree[i] = N - countTrue - 1
 
-dx = [-1, 1, 0, 0]
-dy = [0, 0, -1, 1]
-def dfs(i, j, cnt, sum_):
-    global max_
-    if cnt == 3:
-        max_ = max(max_, sum_)
+    q = deque()
+    for i, e in enu(degree):
+        if e == 0:
+            q.append(i)
+    if len(q) > 1:
+        print("?")
         return
 
-    for d in range(4):
-        ni = i + dx[d]
-        nj = j + dy[d]
-        if 0 <= ni < N and 0 <= nj < M:
-            if not vis[ni][nj]:
-                vis[ni][nj] = True
-                dfs(ni, nj, cnt + 1, sum_ + mat[ni][nj])
-                vis[ni][nj] = False
+    seq = []
+    while q:
+        if len(q) > 1:
+            print("?")
+        node = q.popleft()
+        seq.append(node)
 
-def tSum(i, j):
-    global max_
+        for i, isNbr in enu(G[node]):
+            if isNbr:
+                degree[i] -= 1
+                if degree[i] == 0:
+                    q.append(i)
 
-    for turn in range(4):
-        sum_ = mat[i][j]
-        for d in range(4):
-            if d == turn:
-                continue
-            ni = i + dx[d]
-            nj = j + dy[d]
-            if not (0 <= ni < N and 0 <= nj < M):
-                break
-            sum_ += mat[ni][nj]
-        else:
-            max_ = max(max_, sum_)
+    if len(seq) != N:
+        print("IMPOSSIBLE")
+        return
+
+    print(*(i+1 for i in reversed(seq)))
 
 
 # #############################################################################
