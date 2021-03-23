@@ -46,7 +46,7 @@ def main(f=None):
             continue
 
         for nbr, dFromNode2Nbr in G[node]:
-            if nbr > 150: continue
+            if nbr > D: continue
             newD = distance + dFromNode2Nbr
             if newD < dist[nbr]:
                 dist[nbr] = newD
